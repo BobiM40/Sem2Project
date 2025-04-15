@@ -45,7 +45,8 @@ public class adminLogin extends JFrame{
 
                 if (valid) {
                     JOptionPane.showMessageDialog(null, "Login successful!");
-                    // proceed to next screen or admin panel
+                    new adminWindow();
+                    setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password.");
                 }
