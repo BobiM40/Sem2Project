@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class teacherWindow {
+public class teacherWindow extends JFrame{
     private JPanel teacherPanel;
     private JScrollPane scrollPane;
     private JTable table1;
@@ -9,4 +9,11 @@ public class teacherWindow {
     private JButton editGradeButton;
     private JButton addGradeButton;
     private JLabel welcomeLabel;
+
+    public teacherWindow(){
+        setSize(500, 500);
+        setContentPane(teacherPanel);
+        setVisible(true);
+
+    }
 }
