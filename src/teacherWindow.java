@@ -9,6 +9,7 @@ public class teacherWindow extends JFrame{
     private JButton editGradeButton;
     private JButton addGradeButton;
     private JLabel welcomeLabel;
+    private JLabel imgLabel;
 
     public teacherWindow(){
         setSize(500, 500);

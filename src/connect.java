@@ -1,5 +1,6 @@
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.sql.*;
 
@@ -8,7 +9,7 @@ public class connect {
     private static final String USER = "root";
     private static final String PASSWORD = "0000";
 
-    public static void addUser(String username, String firstName, String lastName, String email, String hashPassword, byte role) {
+    public static void addUser(String username, String firstName, String lastName, String email, String hashPassword, byte role, InputStream img) {
 
         /*
         ROLE:
@@ -29,7 +30,7 @@ public class connect {
                 break;
         }
 
-        String query = "INSERT INTO " + table + " (firstName, lastName, email) VALUES (?, ?, ?)";
+        String query = "INSERT INTO " + table + " (firstName, lastName, email) VALUES (?, ?, ?, ?)";
 
         Connection connection = null;
         PreparedStatement pstmt = null;
@@ -45,6 +46,7 @@ public class connect {
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
             pstmt.setString(3, email);
+            pstmt.setBinaryStream(4, img);
 
             int rowsAffected = pstmt.executeUpdate();
 

@@ -11,6 +11,7 @@ public class adminWindow extends JFrame{
     private JButton deleteUserButton;
     private JButton editUserButton;
     private JButton addUserButton;
+    private JLabel imgLabel;
 
     public adminWindow() {
         setSize(500, 500);
