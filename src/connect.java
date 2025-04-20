@@ -1,5 +1,9 @@
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.sql.*;
@@ -30,7 +34,7 @@ public class connect {
                 break;
         }
 
-        String query = "INSERT INTO " + table + " (firstName, lastName, email) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO " + table + " (firstName, lastName, email, img) VALUES (?, ?, ?, ?)";
 
         Connection connection = null;
         PreparedStatement pstmt = null;
@@ -134,8 +138,9 @@ public class connect {
 
         return true; // Username is available
     }
-    public static boolean checkCredentials(String username, String password, String table) {
-        String query = "SELECT password FROM " + table + " WHERE username = ?";
+    public static User checkCredentials(String username, String password, String table) {
+        String role = table.substring(7, table.length() - 5); // I remove "engage."  and "Login" from the table String to create the role String
+        String query = "SELECT " + role + "ID, password FROM " + table + " WHERE username = ?";
         try (
                 Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 PreparedStatement pstmt = connection.prepareStatement(query)
@@ -145,11 +150,60 @@ public class connect {
 
             if (rs.next()) {
                 String hashedPassword = rs.getString("password");
-                return BCrypt.checkpw(password, hashedPassword);  // compare input password with hashed one
+                if(BCrypt.checkpw(password, hashedPassword)){  // compare input password with hashed one
+                    return login(rs.getString(role + "ID"), role);
+                }
             }
         } catch (SQLException e) {
             System.out.println("SQL Error during login: " + e.getMessage());
         }
-        return false;  // user not found or error
+        return null;  // user not found or error
+    }
+    public static User login(String id, String role) {
+        User user = null;
+        String query = "SELECT " + role + "ID, firstName, img FROM engage." + role + "s WHERE " + role + "ID = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+        ) {
+            pstmt.setString(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    // Get the image as a binary stream and store it
+                    InputStream imgStream = rs.getBinaryStream("img");
+                    user = new User(rs.getString(role + "ID"), rs.getString("firstName"), imgStream);
+                }
+            }
+            return user;
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return user;
+    }
+}
+class User {
+    private String userID;
+    private String firstName;
+    private InputStream img;  // Use InputStream for image data
+
+    public User(String id, String first_name, InputStream img){
+        this.userID = id;
+        this.firstName = first_name;
+        this.img = img;
+    }
+
+    public String getFirstName(){
+        return firstName;
+    }
+
+    public ImageIcon getImageIcon() {
+        try {
+            // Convert InputStream to BufferedImage
+            BufferedImage image = ImageIO.read(img);
+            // Return ImageIcon from the BufferedImage
+            return new ImageIcon(image);
+        } catch (IOException e) {
+            System.out.println("Error loading image: " + e.getMessage());
+            return null;
+        }
     }
 }

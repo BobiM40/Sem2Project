@@ -41,12 +41,12 @@ public class studentLogin extends JFrame{
                 String username = userField.getText();
                 String password = new String(passField.getPassword());
 
-                boolean valid = connect.checkCredentials(username, password, "engage.StudentLogin");
+                User user = connect.checkCredentials(username, password, "engage.StudentLogin");
 
-                if (valid) {
+                if (user != null) {
                     JOptionPane.showMessageDialog(null, "Login successful!");
                     setVisible(false);
-                    new studentWindow();
+                    new studentWindow(user);
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password.");
                 }

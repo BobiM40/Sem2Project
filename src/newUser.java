@@ -147,7 +147,7 @@ public class newUser extends JFrame{
                 }
 
                 connect.addUser(usernameField.getText(), firstNameField.getText(), lastNameField.getText(), emailField.getText(), hashedPassword, (byte)roles.getSelectedIndex(), imageInputStream);
-                JOptionPane.showMessageDialog(null, "Registered successfully. ");
+                JOptionPane.showMessageDialog(null, "User added successfully. ");
                 setVisible(false);
             }
         });

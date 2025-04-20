@@ -41,11 +41,11 @@ public class adminLogin extends JFrame{
                 String username = userField.getText();
                 String password = new String(passField.getPassword());
 
-                boolean valid = connect.checkCredentials(username, password, "engage.AdminLogin");
+                User user = connect.checkCredentials(username, password, "engage.AdminLogin");
 
-                if (valid) {
+                if (user != null) {
                     JOptionPane.showMessageDialog(null, "Login successful!");
-                    new adminWindow();
+                    new adminWindow(user);
                     setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password.");

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class teacherWindow extends JFrame{
     private JPanel teacherPanel;
@@ -11,10 +12,15 @@ public class teacherWindow extends JFrame{
     private JLabel welcomeLabel;
     private JLabel imgLabel;
 
-    public teacherWindow(){
+    public teacherWindow(User user){
         setSize(500, 500);
         setContentPane(teacherPanel);
         setVisible(true);
 
+        welcomeLabel.setText("Welcome " + user.getFirstName() + "! ");
+
+        ImageIcon icon = user.getImageIcon(); // Ensure user.getImg() returns a valid path
+        Image image = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        imgLabel.setIcon(icon);
     }
 }
