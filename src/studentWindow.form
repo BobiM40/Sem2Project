@@ -72,9 +72,12 @@
         </constraints>
         <properties>
           <model>
-            <item value="Subject"/>
-            <item value="Teacher"/>
-            <item value="Grade"/>
+            <item value="Grade A -&gt; Z"/>
+            <item value="Grade Z -&gt; A"/>
+            <item value="Weight A -&gt; Z"/>
+            <item value="Weight Z -&gt; A"/>
+            <item value="Subject A -&gt; Z"/>
+            <item value="Subject Z -&gt; A"/>
           </model>
         </properties>
       </component>

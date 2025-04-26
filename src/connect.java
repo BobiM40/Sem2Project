@@ -286,6 +286,9 @@ public class connect {
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
 
+            // Reset the table columns before adding new ones
+            studentWindow.gradeModel.setColumnCount(0);  // Clear existing columns
+
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
             ResultSetMetaData metaData = rs.getMetaData();

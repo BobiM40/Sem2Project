@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,7 +24,7 @@ public class studentWindow extends JFrame{
 
         gradeModel = new DefaultTableModel();
         gradesTable.setModel(gradeModel);
-        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName, t.firstName AS teacherFirstName, t.lastName AS teacherLastName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + ";");
+        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + ";");
         updateGradesTable();
 
         avgModel = new DefaultTableModel();
@@ -35,6 +37,53 @@ public class studentWindow extends JFrame{
         ImageIcon icon = user.getImageIcon(); // Ensure user.getImg() returns a valid path
         Image image = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         imgLabel.setIcon(icon);
+        sortBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sort;
+                switch (sortBox.getSelectedIndex()){
+                    case 0:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY g.grade ASC;");
+                        updateGradesTable();
+                        break;
+                    case 1:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY g.grade DESC;");
+                        updateGradesTable();
+                        break;
+                    case 2:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY g.weight ASC;");
+                        updateGradesTable();
+                        break;
+                    case 3:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY g.weight DESC;");
+                        updateGradesTable();
+                        break;
+                    case 4:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY c.courseName ASC;");
+                        updateGradesTable();
+                        break;
+                    case 5:
+                        grades.clear();
+                        grades = connect.executeQueryGradesTableStudentWindow("SELECT g.grade, g.weight, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " ORDER BY c.courseName DESC;");
+                        updateGradesTable();
+                        break;
+                    default:
+                        System.out.println("Something went wrong with sorting. ");
+                        break;
+                }
+            }
+        });
+        gradeCalculatorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new gradeCalc();
+            }
+        });
     }
     private void updateGradesTable () {
         gradeModel.setRowCount(0);

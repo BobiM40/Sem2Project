@@ -30,7 +30,7 @@ public class teacherWindow extends JFrame{
 
         gradeModel = new DefaultTableModel();
         gradesTable.setModel(gradeModel);
-        grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, s.email, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
+        grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
         updateGradesTable();
 
         welcomeLabel.setText("Welcome " + user.getFirstName() + "! ");
