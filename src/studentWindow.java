@@ -27,7 +27,7 @@ public class studentWindow extends JFrame{
 
         avgModel = new DefaultTableModel();
         gradeAverageTable.setModel(avgModel);
-        avgs = connect.executeQueryTeachersTableAdminWindow("SELECT c.courseName, SUM(g.grade * g.weight) / SUM(g.weight) AS overallGrade FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " GROUP BY c.courseName ORDER BY c.courseName;");
+        avgs = connect.executeQueryAverageTableStudentWindow("SELECT c.courseName, SUM(g.grade * g.weight) / SUM(g.weight) AS overallGrade FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE s.StudentID = " + user.getUserID() + " GROUP BY c.courseName ORDER BY c.courseName;");
         updateAvgTable();
 
         welcomeLabel.setText("Welcome " + user.getFirstName() + "! ");
