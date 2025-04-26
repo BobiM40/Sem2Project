@@ -159,6 +159,186 @@ public class connect {
         }
         return null;  // user not found or error
     }
+    public static ArrayList<String[]> executeQueryStudentsTableAdminWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                adminWindow.studentModel.addColumn(metaData.getColumnName(i)); // model from adminWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static ArrayList<String[]> executeQueryTeachersTableAdminWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                adminWindow.teacherModel.addColumn(metaData.getColumnName(i)); // model from adminWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static ArrayList<String[]> executeQueryStudentsTableTeacherWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                teacherWindow.studentModel.addColumn(metaData.getColumnName(i)); // model from teacherWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static ArrayList<String[]> executeQueryGradesTableTeacherWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                teacherWindow.gradeModel.addColumn(metaData.getColumnName(i)); // model from teacherWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static ArrayList<String[]> executeQueryGradesTableStudentWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                studentWindow.gradeModel.addColumn(metaData.getColumnName(i)); // model from studentWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static ArrayList<String[]> executeQueryAverageTableStudentWindow(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                studentWindow.avgModel.addColumn(metaData.getColumnName(i)); // model from studentWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
     public static User login(String id, String role) {
         User user = null;
         String query = "SELECT " + role + "ID, firstName, img FROM engage." + role + "s WHERE " + role + "ID = ?";
@@ -205,5 +385,9 @@ class User {
             System.out.println("Error loading image: " + e.getMessage());
             return null;
         }
+    }
+
+    public String getUserID() {
+        return userID;
     }
 }

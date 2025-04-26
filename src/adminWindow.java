@@ -1,23 +1,42 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class adminWindow extends JFrame{
     private JPanel adminPanel;
-    private JTable table1;
-    private JScrollPane scrollPane;
     private JLabel welcomeLabel;
-    private JTextField searchField;
     private JButton deleteUserButton;
-    private JButton editUserButton;
     private JButton addUserButton;
     private JLabel imgLabel;
+    private JTextField searchTeachersField;
+    private JTextField searchStudentsField;
+    private JTable studentsTable;
+    private JTable teachersTable;
+    private JButton editStudentButton;
+    private JButton editStudentCoursesButton;
+    private JButton editTeacherButton;
+    private JButton editTeacherCoursesButton;
+    private JButton courseListButton;
 
+    public static DefaultTableModel studentModel, teacherModel;
+    private ArrayList<String[]> students, teachers;
     public adminWindow(User user) {
-        setSize(500, 500);
+        setSize(1000, 800);
         setContentPane(adminPanel);
         setVisible(true);
+
+        studentModel = new DefaultTableModel();
+        studentsTable.setModel(studentModel);
+        students = connect.executeQueryStudentsTableAdminWindow("SELECT StudentID, firstName, lastName, email FROM engage.Students");
+        updateStudentsTable();
+
+        teacherModel = new DefaultTableModel();
+        teachersTable.setModel(teacherModel);
+        teachers = connect.executeQueryTeachersTableAdminWindow("SELECT TeacherID firstName, lastName, email FROM engage.Teachers");
+        updateTeachersTable();
 
         welcomeLabel.setText("Welcome " + user.getFirstName() + "! ");
 
@@ -30,5 +49,17 @@ public class adminWindow extends JFrame{
                 new newUser();
             }
         });
+    }
+    private void updateStudentsTable () {
+        studentModel.setRowCount(0);
+        for (String[] student : students) {
+            studentModel.addRow(student);
+        }
+    }
+    private void updateTeachersTable () {
+        teacherModel.setRowCount(0);
+        for (String[] teacher : teachers) {
+            teacherModel.addRow(teacher);
+        }
     }
 }
