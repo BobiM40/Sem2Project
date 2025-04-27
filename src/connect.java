@@ -114,6 +114,61 @@ public class connect {
             }
         }
     }
+    public static void editUser(String id, String firstName, String lastName, String email, boolean role) {
+
+        /*
+        ROLE:
+            false - Student
+            true - Teacher
+         */
+        String table = "";
+        if(role){
+            table = "engage.Teachers";
+        }else{
+            table = "engage.Students";
+        }
+
+        String query = "UPDATE " + table + "SET firstName = ?, lastName = ?, email = ? WHERE StudentID = ?;";
+
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false); // Start transaction
+
+            // Insert into the respective table
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, id);
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Edit committed successfully for " + table + " and user id: " + id);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
     public static void addGrade(String StudentID, String CourseID, String grade, String weight){
         // SQL query for inserting actor data into the database
         String query = "INSERT INTO engage.Grades (StudentID, CourseID, grade, weight) VALUES (?, ?, ?, ?);";

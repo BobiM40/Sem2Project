@@ -24,6 +24,7 @@ public class newUser extends JFrame{
     private JLabel usernameFeedback;
     private JButton selectImageButton;
     private JLabel imageLabel;
+    private JButton cancelButton;
 
     private boolean validUser = true, validEmail = false, passwordsMatch = false;
 
@@ -148,7 +149,7 @@ public class newUser extends JFrame{
 
                 connect.addUser(usernameField.getText(), firstNameField.getText(), lastNameField.getText(), emailField.getText(), hashedPassword, (byte)roles.getSelectedIndex(), imageInputStream);
                 JOptionPane.showMessageDialog(null, "User added successfully. ");
-                setVisible(false);
+                dispose();
             }
         });
         selectImageButton.addActionListener(new ActionListener() {
@@ -179,6 +180,12 @@ public class newUser extends JFrame{
                         JOptionPane.showMessageDialog(null, "Error loading image.");
                     }
                 }
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
             }
         });
     }
