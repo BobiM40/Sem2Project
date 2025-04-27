@@ -162,9 +162,6 @@ public class teacherWindow extends JFrame{
                 String StudentID = studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString();
                 String CourseID = studentsTable.getValueAt(studentsTable.getSelectedRow(), 4).toString();
                 new newGrade(StudentID, CourseID, teacherWindow.this, user);
-                grades.clear();
-                grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
-                updateGradesTable();
             }
         });
         editGradeButton.addActionListener(new ActionListener() {
@@ -172,6 +169,14 @@ public class teacherWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String GradeID = gradesTable.getValueAt(gradesTable.getSelectedRow(), 0).toString();
                 new editGrade(GradeID, teacherWindow.this, user);
+            }
+        });
+        deleteGradeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String GradeID = gradesTable.getValueAt(gradesTable.getSelectedRow(), 0).toString();
+                connect.deleteGrade(GradeID);
+                JOptionPane.showMessageDialog(null, "Grade deleted successfully. ");
                 grades.clear();
                 grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
                 updateGradesTable();

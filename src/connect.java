@@ -192,7 +192,53 @@ public class connect {
             // If the insertion is successful, commit the transaction
             if (rowsAffected > 0) {
                 connection.commit();
-                System.out.println("Insertion committed successfully for grade with id: " + GradeID);
+                System.out.println("Edit committed successfully for grade with id: " + GradeID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
+    public static void deleteGrade(String GradeID){
+        // SQL query for inserting actor data into the database
+        String query = "DELETE FROM engage.Grades WHERE GradeID = ?;\n";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, GradeID);  // Set the grade id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Deletion committed successfully for grade with id: " + GradeID);
             } else {
                 // If insertion fails, roll back the transaction
                 connection.rollback();

@@ -28,7 +28,7 @@ public class editGrade extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if(!gradeField.getText().isEmpty() && !weightField.getText().isEmpty() && isValid(gradeField.getText()) && isValid(weightField.getText())){
                     connect.editGrade(gradeField.getText(), weightField.getText(), GradeID);
-                    JOptionPane.showMessageDialog(null, "Grade added successfully. ");
+                    JOptionPane.showMessageDialog(null, "Grade edited successfully. ");
                     if (teacherWindowInstance != null) {
                         teacherWindowInstance.refreshGradesTable(user); // Call a method to refresh the grades table in teacherWindow
                     }
