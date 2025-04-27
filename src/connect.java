@@ -257,6 +257,149 @@ public class connect {
             }
         }
     }
+    public static void addCourse(String TeacherID, String courseName){
+        // SQL query for inserting actor data into the database
+        String query = "INSERT INTO engage.Courses (courseName, TeacherID) VALUES (?, ?);";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, courseName);  // Set course name
+            pstmt.setString(2, TeacherID);   // Set teacher id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Insertion committed successfully for course: " + courseName);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
+    public static void editCourse(String CourseID, String TeacherID, String courseName){
+        // SQL query for inserting actor data into the database
+        String query = "UPDATE engage.Courses SET courseName = ?, TeacherID = ? WHERE CourseID = ?;";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, courseName);  // Set course name
+            pstmt.setString(2, TeacherID);   // Set teacher id
+            pstmt.setString(3, CourseID);   // Set course id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Edit committed successfully for course: " + courseName);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+
+    }
+    public static void deleteCourse(String CourseID){
+        // SQL query for inserting actor data into the database
+        String query = "DELETE FROM engage.Courses WHERE CourseID = ?;";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, CourseID);   // Set course id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Deletion committed successfully for course: " + CourseID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+
+    }
     public static boolean isValidUser(String user) {
         String[] tables = {
                 "engage.StudentLogin",
@@ -499,6 +642,59 @@ public class connect {
             System.out.println("SQL Error: " + e.getMessage());
         }
         return results;
+    }
+    public static ArrayList<String[]> executeQueryCourses(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // Reset the table columns before adding new ones
+            courseWindow.courseModel.setColumnCount(0);  // Clear existing columns
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                courseWindow.courseModel.addColumn(metaData.getColumnName(i)); // model from courseWindow.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
+    public static boolean checkTeacherExists(String teacherId) {
+        // SQL query to check if teacher with the given ID exists
+        String query = "SELECT 1 FROM engage.Teachers WHERE TeacherID = ? LIMIT 1"; // LIMIT 1 for efficiency
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            // Set the teacher ID in the query
+            pstmt.setString(1, teacherId);
+
+            // Execute the query
+            ResultSet rs = pstmt.executeQuery();
+
+            // If a result is returned, teacher exists
+            return rs.next(); // returns true if the teacher exists, false if no rows are returned
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     public static User login(String id, String role) {
         User user = null;

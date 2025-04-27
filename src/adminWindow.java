@@ -49,6 +49,12 @@ public class adminWindow extends JFrame{
                 new newUser();
             }
         });
+        courseListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new courseWindow();
+            }
+        });
     }
     private void updateStudentsTable () {
         studentModel.setRowCount(0);
