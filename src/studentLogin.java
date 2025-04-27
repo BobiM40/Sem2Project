@@ -45,7 +45,7 @@ public class studentLogin extends JFrame{
 
                 if (user != null) {
                     JOptionPane.showMessageDialog(null, "Login successful!");
-                    setVisible(false);
+                    dispose();
                     new studentWindow(user);
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password.");

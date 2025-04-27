@@ -115,6 +115,22 @@ public class adminWindow extends JFrame{
                 new editUser(TeacherID, true, adminWindow.this);
             }
         });
+        editStudentCoursesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String StudentID = studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString();
+                String firstName = studentsTable.getValueAt(studentsTable.getSelectedRow(), 1).toString();
+                new editPersonalCourseList(firstName, StudentID, false);
+            }
+        });
+        editTeacherCoursesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String TeacherID = teachersTable.getValueAt(teachersTable.getSelectedRow(), 0).toString();
+                String firstName = teachersTable.getValueAt(teachersTable.getSelectedRow(), 1).toString();
+                new editPersonalCourseList(firstName, TeacherID, true);
+            }
+        });
     }
     private void updateStudentsTable () {
         studentModel.setRowCount(0);

@@ -268,7 +268,7 @@ public class connect {
     }
     public static void deleteGrade(String GradeID){
         // SQL query for inserting actor data into the database
-        String query = "DELETE FROM engage.Grades WHERE GradeID = ?;\n";
+        String query = "DELETE FROM engage.Grades WHERE GradeID = ?;";
 
         // Declare variables for database connection and prepared statement
         Connection connection = null;
@@ -408,9 +408,208 @@ public class connect {
         }
 
     }
-    public static void deleteCourse(String CourseID){
+    public static void applyCourse(String StudentID, String CourseID){
         // SQL query for inserting actor data into the database
-        String query = "DELETE FROM engage.Courses WHERE CourseID = ?;";
+        String query = "INSERT INTO engage.StudentsTakingCourses (StudentID, CourseID) VALUES (?, ?);";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, StudentID);  // Set student id
+            pstmt.setString(2, CourseID);   // Set course id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Insertion committed successfully for student with ID: " + StudentID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
+    public static void assignCourse(String TeacherID, String CourseID){
+        // SQL query for inserting actor data into the database
+        String query = "UPDATE engage.Courses SET TeacherID = ? WHERE CourseID = ?;";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, TeacherID);  // Set teacher id
+            pstmt.setString(2, CourseID);   // Set course id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Insertion committed successfully for teacher with ID: " + TeacherID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
+    public static void deleteCourse(String CourseID) {
+        String deleteFromGrades = "DELETE FROM engage.Grades WHERE CourseID = ?;";
+        String deleteFromStudentsTakingCourses = "DELETE FROM engage.StudentsTakingCourses WHERE CourseID = ?;";
+        String deleteFromCourses = "DELETE FROM engage.Courses WHERE CourseID = ?;";
+
+        Connection connection = null;
+        PreparedStatement pstmtGrades = null;
+        PreparedStatement pstmtStudents = null;
+        PreparedStatement pstmtCourse = null;
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false); // Start transaction
+
+            // Delete related records from Grades table
+            pstmtGrades = connection.prepareStatement(deleteFromGrades);
+            pstmtGrades.setString(1, CourseID);
+            pstmtGrades.executeUpdate();
+
+            // Delete related records from StudentsTakingCourses table
+            pstmtStudents = connection.prepareStatement(deleteFromStudentsTakingCourses);
+            pstmtStudents.setString(1, CourseID);
+            pstmtStudents.executeUpdate();
+
+            // Now delete the course itself
+            pstmtCourse = connection.prepareStatement(deleteFromCourses);
+            pstmtCourse.setString(1, CourseID);
+            int rowsAffected = pstmtCourse.executeUpdate();
+
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Deletion committed successfully for course: " + CourseID);
+            } else {
+                connection.rollback();
+                System.out.println("No course found with ID: " + CourseID + ". Transaction rolled back.");
+            }
+
+        } catch (SQLException ex) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        } finally {
+            try {
+                if (pstmtGrades != null) pstmtGrades.close();
+                if (pstmtStudents != null) pstmtStudents.close();
+                if (pstmtCourse != null) pstmtCourse.close();
+                if (connection != null) connection.close();
+            } catch (SQLException closeEx) {
+                closeEx.printStackTrace();
+            }
+        }
+    }
+
+    public static void removeStudentCourse(String CourseID, String StudentID){
+        // SQL query for inserting actor data into the database
+        String query = "DELETE FROM engage.StudentsTakingCourses WHERE StudentID = ? AND CourseID = ?;";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, StudentID);   // Set student id
+            pstmt.setString(2, CourseID);   // Set course id
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Removal committed successfully for student with ID: " + StudentID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
+    public static void removeTeacherCourse(String CourseID){
+        // SQL query for inserting actor data into the database
+        String query = "UPDATE engage.Courses SET TeacherID = NULL WHERE CourseID = ?;";
 
         // Declare variables for database connection and prepared statement
         Connection connection = null;
@@ -435,7 +634,7 @@ public class connect {
             // If the insertion is successful, commit the transaction
             if (rowsAffected > 0) {
                 connection.commit();
-                System.out.println("Deletion committed successfully for course: " + CourseID);
+                System.out.println("Removal committed successfully for course with ID: " + CourseID);
             } else {
                 // If insertion fails, roll back the transaction
                 connection.rollback();
@@ -453,7 +652,6 @@ public class connect {
                 rollbackEx.printStackTrace();
             }
         }
-
     }
     public static boolean isValidUser(String user) {
         String[] tables = {
@@ -731,6 +929,39 @@ public class connect {
         }
         return results;
     }
+    public static ArrayList<String[]> executeQueryCourseList(String query) {
+        ArrayList<String[]> results = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // Reset the table columns before adding new ones
+            editPersonalCourseList.courseListModel.setColumnCount(0);  // Clear existing columns
+
+            // ResultSetMetaData object provides detailed information about the columns in the result set.
+            // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // to add colums automatically
+            for (int i = 1; i <= columnCount; i++) {
+                editPersonalCourseList.courseListModel.addColumn(metaData.getColumnName(i)); // model from editPersonalCourseList.java
+            }
+
+            // to add rows.
+            while (rs.next()) {
+                String[] row = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getString(i + 1);
+                }
+                results.add(row);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return results;
+    }
     public static boolean checkTeacherExists(String teacherId) {
         // SQL query to check if teacher with the given ID exists
         String query = "SELECT 1 FROM engage.Teachers WHERE TeacherID = ? LIMIT 1"; // LIMIT 1 for efficiency
@@ -749,6 +980,44 @@ public class connect {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+    public static boolean checkCourseExists(String courseId) {
+        String query = "SELECT COUNT(*) FROM engage.Courses WHERE CourseID = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, courseId);  // Set the course ID parameter
+
+            // Execute the query and get the result
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // If the count is greater than 0, the course exists
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;  // Return false if there's an exception or no matching record
+    }
+    public static boolean isStudentEnrolled(String studentID, String courseID) {
+        String query = "SELECT * FROM engage.StudentsTakingCourses WHERE StudentID = ? AND CourseID = ?";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setString(1, studentID);
+            pstmt.setString(2, courseID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();  // If there is a result, student is enrolled
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("SQL Error: " + ex.getMessage());
+            return false;  // Assume not enrolled if error occurs
         }
     }
     public static User login(String id, String role) {
