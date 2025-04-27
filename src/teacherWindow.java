@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -180,6 +182,92 @@ public class teacherWindow extends JFrame{
                 grades.clear();
                 grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
                 updateGradesTable();
+            }
+        });
+        studentsSeachField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if(studentsSeachField.getText().isEmpty()){
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateStudentsTable();
+                }else{
+                    String keyWord = studentsSeachField.getText();
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR s.email LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateStudentsTable();
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if(studentsSeachField.getText().isEmpty()){
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateStudentsTable();
+                }else{
+                    String keyWord = studentsSeachField.getText();
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR s.email LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateStudentsTable();
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                if(studentsSeachField.getText().isEmpty()){
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateStudentsTable();
+                }else{
+                    String keyWord = studentsSeachField.getText();
+                    students.clear();
+                    students = connect.executeQueryStudentsTableTeacherWindow("SELECT s.StudentID, s.firstName, s.lastName, s.email, c.CourseID, c.courseName FROM engage.Students AS s JOIN engage.StudentsTakingCourses AS stc ON s.StudentID = stc.StudentID JOIN engage.Courses AS c ON stc.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR s.email LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateStudentsTable();
+                }
+            }
+        });
+        gradesSearchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if(gradesSearchField.getText().isEmpty()){
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateGradesTable();
+                }else{
+                    String keyWord = gradesSearchField.getText();
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(g.GradeID AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.grade AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.weight AS CHAR) LIKE '%" + keyWord + "%' OR CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateGradesTable();
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if(gradesSearchField.getText().isEmpty()){
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateGradesTable();
+                }else{
+                    String keyWord = gradesSearchField.getText();
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(g.GradeID AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.grade AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.weight AS CHAR) LIKE '%" + keyWord + "%' OR CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateGradesTable();
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                if(gradesSearchField.getText().isEmpty()){
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + ";");
+                    updateGradesTable();
+                }else{
+                    String keyWord = gradesSearchField.getText();
+                    grades.clear();
+                    grades = connect.executeQueryGradesTableTeacherWindow("SELECT g.GradeID, g.grade, g.weight, s.StudentID, s.firstName, s.lastName, c.CourseID, c.courseName FROM engage.Grades AS g JOIN engage.Courses AS c ON g.CourseID = c.CourseID JOIN engage.Teachers AS t ON c.TeacherID = t.TeacherID JOIN engage.Students AS s ON g.StudentID = s.StudentID WHERE t.TeacherID = " + user.getUserID() + " AND (CAST(g.GradeID AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.grade AS CHAR) LIKE '%" + keyWord + "%' OR CAST(g.weight AS CHAR) LIKE '%" + keyWord + "%' OR CAST(s.StudentID AS CHAR) LIKE '%" + keyWord + "%' OR s.firstName LIKE '%" + keyWord + "%' OR s.lastName LIKE '%" + keyWord + "%' OR CAST(c.CourseID AS CHAR) LIKE '%" + keyWord + "%' OR c.courseName LIKE '%" + keyWord + "%');");
+                    updateGradesTable();
+                }
             }
         });
     }
