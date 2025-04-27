@@ -22,7 +22,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Current Grade:"/>
+          <text value="Current Grade (%):"/>
         </properties>
       </component>
       <component id="245e7" class="javax.swing.JTextField" binding="currentGradeField">
@@ -38,7 +38,7 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Desired Grade:"/>
+          <text value="Desired Grade (%):"/>
         </properties>
       </component>
       <component id="fcd5" class="javax.swing.JTextField" binding="desiredGradeField">
@@ -54,7 +54,7 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Exam Weight: "/>
+          <text value="Exam Weight (%): "/>
         </properties>
       </component>
       <component id="dacfe" class="javax.swing.JTextField" binding="examWeightField">
@@ -70,7 +70,7 @@
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Score Needed: "/>
+          <text value="Score Needed (%): "/>
         </properties>
       </component>
       <component id="df325" class="javax.swing.JLabel" binding="score">

@@ -31,33 +31,15 @@ public class gradeCalc extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if(currentGradeField.getText().isEmpty() || desiredGradeField.getText().isEmpty() || examWeightField.getText().isEmpty()){
                     JOptionPane.showMessageDialog(null, "Please, fill in all the fields!");
-                }else if (!currentGradeField.getText().matches("[0-9%,.]+") || !desiredGradeField.getText().matches("[0-9%,.]+") || !examWeightField.getText().matches("[0-9%,.]+")) {
+                }else if(canBeDouble(currentGradeField.getText()) && canBeDouble(desiredGradeField.getText()) && canBeDouble(examWeightField.getText())){
+                    double desiredGrade = Double.parseDouble(desiredGradeField.getText());
+                    double currentGrade = Double.parseDouble(currentGradeField.getText());
+                    double examWeight = Double.parseDouble(examWeightField.getText());
+                    double requiredScore = (desiredGrade - (currentGrade * (100 - examWeight) / 100)) / (examWeight / 100);
+                    score.setText(Double.toString(Math.round(requiredScore * 100.0) / 100.0));
+                }else{
                     JOptionPane.showMessageDialog(null, "Please, fill in all the fields accordingly!");
-                } else {
-                    try{
-                        double desiredGrade;
-                        if(desiredGradeField.getText().contains("%")){
-                            desiredGrade = Double.parseDouble(desiredGradeField.getText().replace("%", "")) / 100;
-                        }else{
-                            desiredGrade = Double.parseDouble(desiredGradeField.getText());
-                        }
-                        double currentGrade;
-                        if(currentGradeField.getText().contains("%")){
-                            currentGrade = Double.parseDouble(currentGradeField.getText().replace("%", "")) / 100;
-                        }else{
-                            currentGrade = Double.parseDouble(currentGradeField.getText());
-                        }
-                        double examWeight;
-                        if(examWeightField.getText().contains("%")){
-                            examWeight = Double.parseDouble(examWeightField.getText().replace("%", "")) / 100;
-                        }else{
-                            examWeight = Double.parseDouble(examWeightField.getText());
-                        }
-                        double requiredGrade = (desiredGrade - currentGrade * (1 - examWeight)) / examWeight;
-                        score.setText(String.valueOf(requiredGrade));
-                    }catch (NumberFormatException er) {
-                        System.out.println("Invalid number format! " + er);
-                    }
+
                 }
             }
         });
@@ -67,5 +49,13 @@ public class gradeCalc extends JFrame{
                 setVisible(false);
             }
         });
+    }
+    public static boolean canBeDouble(String str) {
+        try {
+            Double.parseDouble(str);  // Attempt to parse the string as a double
+            return true;  // If no exception is thrown, it's a valid double
+        } catch (NumberFormatException e) {
+            return false;  // If an exception is thrown, it's not a valid double
+        }
     }
 }
