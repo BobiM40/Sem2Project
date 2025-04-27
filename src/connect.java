@@ -114,6 +114,55 @@ public class connect {
             }
         }
     }
+    public static void addGrade(String StudentID, String CourseID, String grade, String weight){
+        // SQL query for inserting actor data into the database
+        String query = "INSERT INTO engage.Grades (StudentID, CourseID, grade, weight) VALUES (?, ?, ?, ?);";
+
+        // Declare variables for database connection and prepared statement
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Establish a connection to the database
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Disable auto-commit to manually handle transactions
+            connection.setAutoCommit(false);
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values for the query placeholders using the input data
+            pstmt.setString(1, StudentID);  // Set student id
+            pstmt.setString(2, CourseID);   // Set course id
+            pstmt.setString(3, grade);  // Set the grade value
+            pstmt.setString(4, weight);  // Set the grade weight
+
+            // Execute the query and get the number of rows affected
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If the insertion is successful, commit the transaction
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Insertion committed successfully for grade with StudentID: " + StudentID + " and CourseID: " + CourseID);
+            } else {
+                // If insertion fails, roll back the transaction
+                connection.rollback();
+            }
+        } catch (SQLException ex) {
+            // Handle SQL exceptions
+            try {
+                if (connection == null) {
+                    // If an error occurs, roll back the transaction
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                // Print stack trace if there is an error during rollback
+                rollbackEx.printStackTrace();
+            }
+        }
+    }
     public static boolean isValidUser(String user) {
         String[] tables = {
                 "engage.StudentLogin",
@@ -166,6 +215,9 @@ public class connect {
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
 
+            // Reset the table columns before adding new ones
+            adminWindow.studentModel.setColumnCount(0);  // Clear existing columns
+
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
             ResultSetMetaData metaData = rs.getMetaData();
@@ -195,6 +247,9 @@ public class connect {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
+
+            // Reset the table columns before adding new ones
+            adminWindow.teacherModel.setColumnCount(0);  // Clear existing columns
 
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
@@ -226,6 +281,9 @@ public class connect {
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
 
+            // Reset the table columns before adding new ones
+            teacherWindow.studentModel.setColumnCount(0);  // Clear existing columns
+
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
             ResultSetMetaData metaData = rs.getMetaData();
@@ -255,6 +313,9 @@ public class connect {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
+
+            // Reset the table columns before adding new ones
+            teacherWindow.gradeModel.setColumnCount(0);  // Clear existing columns
 
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
@@ -318,6 +379,9 @@ public class connect {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
+
+            // Reset the table columns before adding new ones
+            studentWindow.avgModel.setColumnCount(0);  // Clear existing columns
 
             // ResultSetMetaData object provides detailed information about the columns in the result set.
             // This includes column names, types, and other attributes like whether a column is nullable, its size, etc.
