@@ -132,12 +132,14 @@ public class connect {
 
         Connection connection = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
 
         try {
             // Establish a connection to the database
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             connection.setAutoCommit(false); // Start transaction
+
+            // Prepare the SQL query
+            pstmt = connection.prepareStatement(query);
 
             // Insert into the respective table
             pstmt.setString(1, firstName);
