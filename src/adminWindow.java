@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class adminWindow extends JFrame{
     private JPanel adminPanel;
@@ -58,7 +60,7 @@ public class adminWindow extends JFrame{
         addUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new newUser();
+                new newUser(adminWindow.this);
             }
         });
         courseListButton.addActionListener(new ActionListener() {
@@ -131,6 +133,57 @@ public class adminWindow extends JFrame{
                 new editPersonalCourseList(firstName, TeacherID, true);
             }
         });
+        deleteStudentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String StudentID = studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString();
+                connect.deleteStudent(StudentID);
+                students.clear();
+                students = connect.executeQueryStudentsTableAdminWindow("SELECT StudentID, firstName, lastName, email FROM engage.Students");
+                updateStudentsTable();
+            }
+        });
+        deleteTeacherButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String TeacherID = teachersTable.getValueAt(teachersTable.getSelectedRow(), 0).toString();
+                connect.deleteTeacher(TeacherID);
+                teachers = connect.executeQueryTeachersTableAdminWindow("SELECT TeacherID, firstName, lastName, email FROM engage.Teachers");
+                updateTeachersTable();
+            }
+        });
+        searchStudentsField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterStudents();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterStudents();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterStudents();
+            }
+        });
+        searchTeachersField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTeachers();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTeachers();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTeachers();
+            }
+        });
     }
     private void updateStudentsTable () {
         studentModel.setRowCount(0);
@@ -152,5 +205,29 @@ public class adminWindow extends JFrame{
         teachers.clear();
         teachers = connect.executeQueryTeachersTableAdminWindow("SELECT TeacherID, firstName, lastName, email FROM engage.Teachers");
         updateTeachersTable();
+    }
+    private void filterStudents() {
+        String query = searchStudentsField.getText().toLowerCase();
+        studentModel.setRowCount(0);
+        for (String[] student : students) {
+            if (student[0].contains(query) ||  // StudentID
+                    student[1].toLowerCase().contains(query) ||  // First Name
+                    student[2].toLowerCase().contains(query) ||  // Last Name
+                    student[3].toLowerCase().contains(query)) {  // Email
+                studentModel.addRow(student);
+            }
+        }
+    }
+    private void filterTeachers() {
+        String query = searchTeachersField.getText().toLowerCase();
+        teacherModel.setRowCount(0);
+        for (String[] teacher : teachers) {
+            if (teacher[0].contains(query) ||  // TeacherID
+                    teacher[1].toLowerCase().contains(query) ||  // First Name
+                    teacher[2].toLowerCase().contains(query) ||  // Last Name
+                    teacher[3].toLowerCase().contains(query)) {  // Email
+                teacherModel.addRow(teacher);
+            }
+        }
     }
 }

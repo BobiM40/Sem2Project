@@ -27,17 +27,17 @@ public class roleSelect extends JFrame {
                 switch(roles.getSelectedIndex()){
                     case 0:
                         new studentLogin();
-                        dispose();
+                        setVisible(false);
                         break;
 
                     case 1:
                         new teacherLogin();
-                        dispose();
+                        setVisible(false);
                         break;
 
                     case 2:
                         new adminLogin();
-                        dispose();
+                        setVisible(false);
                         break;
 
                     default:

@@ -559,7 +559,145 @@ public class connect {
             }
         }
     }
+    public static void deleteStudent(String StudentID) {
+        // SQL statements to delete from related tables
+        String deleteFromGrades = "DELETE FROM engage.Grades WHERE StudentID = ?;";
+        String deleteFromStudentsTakingCourses = "DELETE FROM engage.StudentsTakingCourses WHERE StudentID = ?;";
+        String deleteFromStudentLogin = "DELETE FROM engage.StudentLogin WHERE StudentID = ?;";
+        String deleteFromStudents = "DELETE FROM engage.Students WHERE StudentID = ?;";
 
+        Connection connection = null;
+        PreparedStatement pstmtGrades = null;
+        PreparedStatement pstmtStudentsTakingCourses = null;
+        PreparedStatement pstmtStudentLogin = null;
+        PreparedStatement pstmtStudent = null;
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false); // Start transaction
+
+            // Delete related records from Grades table
+            pstmtGrades = connection.prepareStatement(deleteFromGrades);
+            pstmtGrades.setString(1, StudentID);
+            pstmtGrades.executeUpdate();
+
+            // Delete related records from StudentsTakingCourses table
+            pstmtStudentsTakingCourses = connection.prepareStatement(deleteFromStudentsTakingCourses);
+            pstmtStudentsTakingCourses.setString(1, StudentID);
+            pstmtStudentsTakingCourses.executeUpdate();
+
+            // Delete related records from StudentLogin table
+            pstmtStudentLogin = connection.prepareStatement(deleteFromStudentLogin);
+            pstmtStudentLogin.setString(1, StudentID);
+            pstmtStudentLogin.executeUpdate();
+
+            // Now delete the student from Students table
+            pstmtStudent = connection.prepareStatement(deleteFromStudents);
+            pstmtStudent.setString(1, StudentID);
+            int rowsAffected = pstmtStudent.executeUpdate();
+
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Deletion committed successfully for student: " + StudentID);
+            } else {
+                connection.rollback();
+                System.out.println("No student found with ID: " + StudentID + ". Transaction rolled back.");
+            }
+
+        } catch (SQLException ex) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        } finally {
+            try {
+                if (pstmtGrades != null) pstmtGrades.close();
+                if (pstmtStudentsTakingCourses != null) pstmtStudentsTakingCourses.close();
+                if (pstmtStudentLogin != null) pstmtStudentLogin.close();
+                if (pstmtStudent != null) pstmtStudent.close();
+                if (connection != null) connection.close();
+            } catch (SQLException closeEx) {
+                closeEx.printStackTrace();
+            }
+        }
+    }
+    public static void deleteTeacher(String TeacherID) {
+        String deleteFromGrades = "DELETE FROM engage.Grades WHERE CourseID IN (SELECT CourseID FROM engage.Courses WHERE TeacherID = ?);";
+        String deleteFromStudentsTakingCourses = "DELETE FROM engage.StudentsTakingCourses WHERE CourseID IN (SELECT CourseID FROM engage.Courses WHERE TeacherID = ?);";
+        String deleteFromCourses = "DELETE FROM engage.Courses WHERE TeacherID = ?;";
+        String deleteFromTeacherLogin = "DELETE FROM engage.TeacherLogin WHERE TeacherID = ?;";
+        String deleteFromTeachers = "DELETE FROM engage.Teachers WHERE TeacherID = ?;";
+
+        Connection connection = null;
+        PreparedStatement pstmtGrades = null;
+        PreparedStatement pstmtStudentsTakingCourses = null;
+        PreparedStatement pstmtCourses = null;
+        PreparedStatement pstmtTeacherLogin = null;
+        PreparedStatement pstmtTeacher = null;
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false); // Start transaction
+
+            // Delete grades related to this teacher's courses
+            pstmtGrades = connection.prepareStatement(deleteFromGrades);
+            pstmtGrades.setString(1, TeacherID);
+            pstmtGrades.executeUpdate();
+
+            // Delete student enrollments in this teacher's courses
+            pstmtStudentsTakingCourses = connection.prepareStatement(deleteFromStudentsTakingCourses);
+            pstmtStudentsTakingCourses.setString(1, TeacherID);
+            pstmtStudentsTakingCourses.executeUpdate();
+
+            // Delete courses taught by this teacher
+            pstmtCourses = connection.prepareStatement(deleteFromCourses);
+            pstmtCourses.setString(1, TeacherID);
+            pstmtCourses.executeUpdate();
+
+            // Delete teacher's login info
+            pstmtTeacherLogin = connection.prepareStatement(deleteFromTeacherLogin);
+            pstmtTeacherLogin.setString(1, TeacherID);
+            pstmtTeacherLogin.executeUpdate();
+
+            // Finally, delete the teacher
+            pstmtTeacher = connection.prepareStatement(deleteFromTeachers);
+            pstmtTeacher.setString(1, TeacherID);
+            int rowsAffected = pstmtTeacher.executeUpdate();
+
+            if (rowsAffected > 0) {
+                connection.commit();
+                System.out.println("Deletion committed successfully for teacher: " + TeacherID);
+            } else {
+                connection.rollback();
+                System.out.println("No teacher found with ID: " + TeacherID + ". Transaction rolled back.");
+            }
+
+        } catch (SQLException ex) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+                System.out.println("SQL Error: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        } finally {
+            try {
+                if (pstmtGrades != null) pstmtGrades.close();
+                if (pstmtStudentsTakingCourses != null) pstmtStudentsTakingCourses.close();
+                if (pstmtCourses != null) pstmtCourses.close();
+                if (pstmtTeacherLogin != null) pstmtTeacherLogin.close();
+                if (pstmtTeacher != null) pstmtTeacher.close();
+                if (connection != null) connection.close();
+            } catch (SQLException closeEx) {
+                closeEx.printStackTrace();
+            }
+        }
+    }
     public static void removeStudentCourse(String CourseID, String StudentID){
         // SQL query for inserting actor data into the database
         String query = "DELETE FROM engage.StudentsTakingCourses WHERE StudentID = ? AND CourseID = ?;";

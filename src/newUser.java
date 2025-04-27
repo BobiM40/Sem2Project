@@ -28,8 +28,8 @@ public class newUser extends JFrame{
 
     private boolean validUser = true, validEmail = false, passwordsMatch = false;
 
-    public newUser() {
-        setSize(500, 500);
+    public newUser(adminWindow adminWindow) {
+        setSize(1000, 800);
         setContentPane(newUserPanel);
         setVisible(true);
 
@@ -148,6 +148,7 @@ public class newUser extends JFrame{
                 }
 
                 connect.addUser(usernameField.getText(), firstNameField.getText(), lastNameField.getText(), emailField.getText(), hashedPassword, (byte)roles.getSelectedIndex(), imageInputStream);
+                adminWindow.refreshTables();
                 JOptionPane.showMessageDialog(null, "User added successfully. ");
                 dispose();
             }
